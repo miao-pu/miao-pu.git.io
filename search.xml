@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>week9</title>
+      <link href="/2022/04/18/week9/"/>
+      <url>/2022/04/18/week9/</url>
+      
+        <content type="html"><![CDATA[<h2 id="IO类"><a href="#IO类" class="headerlink" title="IO类"></a>IO类</h2><hr><table><thead><tr><th align="center">头文件</th><th align="center">类型</th></tr></thead><tbody><tr><td align="center">iostream</td><td align="center">iostream，wistream从流读取数据  ostream，wostream向流写入数据  iostream，wiosteam读写流</td></tr><tr><td align="center">fstream</td><td align="center">ifstream，wifstream从文件读取数据 ofstream，wofstream向文件读入数据 fstream，wfstream读写文件</td></tr><tr><td align="center">sstream</td><td align="center">istringstream wistringstream从string读取数据  ostringstream，wostringstream向string写入数据  stringstream，wstringstream读写string</td></tr></tbody></table><hr><ul><li>标准库通过<code>继承机制</code>使我们能忽略不同类型的流之间的差异</li><li>类型<code>ifstream</code>和<code>istringstream</code>都继承自<code>istream</code>，我们可以像使用<code>istream</code>对象一样来使用<code>ifstream</code>和<code>istringstream</code>  </li></ul><p><code>note</code>:拷贝和赋值的区别：拷贝是构造行为，状态取决于用于构造的对象；赋值是对已构造对象进行状态更新。赋值侧重于更新，构造侧重于构造。  </p><ul><li>IO对象无拷贝或赋值<br>我们不能将形参或返回类型设为流类型，解决：使用引用方式传递和返回流<br>读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</li></ul><p>置位：置位的意思是将某一个bit设置为1；<br>复位：复位是将某一个bit设置为0。  </p><table><thead><tr><th align="center"></th><th align="center"></th></tr></thead><tbody><tr><td align="center">strm::iostate</td><td align="center">strm是一种io类型，iOstate是一种机器相关的类型，提供了表达条件状态的完整功能</td></tr><tr><td align="center">strm::badbit</td><td align="center">用来指出流已经崩溃</td></tr><tr><td align="center">strm::failbit</td><td align="center">用来指出一个IO操作失败</td></tr><tr><td align="center">strm::eofbit</td><td align="center">用来指出流到达文件结束</td></tr><tr><td align="center">strm::goodbit</td><td align="center">指出流未处于错误状态，值保证为零</td></tr><tr><td align="center">s.eof()</td><td align="center">若流s的eofbit置位，返回true</td></tr><tr><td align="center">s.bad()</td><td align="center">badbit置位返回TRUE</td></tr><tr><td align="center">s.good()</td><td align="center">流s处于有效状态返回true</td></tr><tr><td align="center">s.clear()</td><td align="center">将流中所有错误标志位复位</td></tr><tr><td align="center">s.clear(flags)</td><td align="center">根据flags标志位，将流s中对于条件状态位复位</td></tr><tr><td align="center">s.setstate(flags)</td><td align="center">根据flags标志位，将流s中对于条件状态位置位</td></tr><tr><td align="center">s.rdstate()</td><td align="center">返回流s的当前条件状态</td></tr></tbody></table><ul><li>管理输出缓冲<br>操作系统可以将程序的多个输出操作组合成单一的系统级写操作<br>导致缓冲刷新(即数据真正地写到输出设备或文件)的原因：  </li></ul><ol><li>程序正常结束</li><li>缓冲区满</li><li>使用操纵符例如endl，显示刷新缓冲区</li><li>在每个输出操作之后，我们可以用操纵符unitbuf设置流的内部状态，来清空缓冲区。默认情况下，对cerr是设置unitbuf的，因此写到cerr的内容都是立即刷新的</li><li>一个输出流可能被关联到另一个流。在这种情况下，当读写被关联的流流，关联到的流的缓冲区会被刷新。例如默认情况下，cin和cerr都关联到cout，读cin或写cerr都会导致cout的缓冲区被刷新。</li></ol><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cout&lt;&lt;<span class="string">&quot;HI&quot;</span>&lt;&lt;endl;<span class="comment">//输出HI和一个换行然后刷新缓冲区</span></span><br><span class="line">cout&lt;&lt;<span class="string">&quot;HI&quot;</span>&lt;&lt;flush;<span class="comment">//输出HI，然后刷新缓冲区，不附加任何额外字符</span></span><br><span class="line">cout&lt;&lt;<span class="string">&quot;HI&quot;</span>&lt;&lt;ends;<span class="comment">//输出HI和一个空字符，然后刷新缓冲区</span></span><br></pre></td></tr></table></figure><ul><li>关联输入和输出流<br>tie有两个重载的版本：一个版本不带参数，返回指向输出流的指针。如果本对象当前关联到一个<code>输出流</code>，则返回指向这个输出流的指针。tie的第二个版本接受一个指向ostream的指针，将自己关联到ostream，即x.tie(&amp;o)将流x关联到输出流o；<br>每个流同时最多关联到一个流，但是多个流可以同时关联到同一个ostream  <h2 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h2></li></ul><p>用<code>fstream</code>替代<code>iostream &amp;</code><br><code>note：</code>当一个fstream对象被销毁是，，close会自动被调用  </p><table><thead><tr><th align="center">文件模式</th><th align="center"></th></tr></thead><tbody><tr><td align="center">in</td><td align="center">以读方式打开</td></tr><tr><td align="center">out</td><td align="center">以写方式打开</td></tr><tr><td align="center">app</td><td align="center">每次写操作前均定位到文件末尾</td></tr><tr><td align="center">ate</td><td align="center">打开晚间后立即定位到文件末尾</td></tr><tr><td align="center">trunc</td><td align="center">截断文件</td></tr><tr><td align="center">binary</td><td align="center">以二进制方式进行IO</td></tr></tbody></table><ul><li>以out模式打开文件会丢弃已有数据<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">&quot;FILE&quot;</span>,ofstream::out)</span>；<span class="comment">//隐含截断文件</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out1</span><span class="params">(<span class="string">&quot;FILE&quot;</span>,ofstream::out | ofstream ::trunc)</span></span>;<span class="comment">//显式截断</span></span><br><span class="line"><span class="comment">//为保留文件内容，我们必须显式指定app模式；</span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">&quot;FILE&quot;</span>,ofstream::app)</span>；<span class="comment">//隐含输出模式</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">&quot;FILE&quot;</span>,ofstream::out | ofstream::app)</span>；</span></span><br></pre></td></tr></table></figure></li></ul><h2 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h2><table><thead><tr><th align="center">stringstream特有的操作</th><th align="center"></th></tr></thead><tbody><tr><td align="center">sstream strm</td><td align="center">strm是一个未绑定的stringstream对象。sstream是头文件sstream中定义的一个类型</td></tr><tr><td align="center">sstream strm(s)</td><td align="center">strm保存string s的一个拷贝。此构造函数是explicit的</td></tr><tr><td align="center">strm.str()</td><td align="center">返回strm所保存的string1的拷贝</td></tr><tr><td align="center">strm.str(s)</td><td align="center">将string s拷贝到strm中。返回void</td></tr></tbody></table>]]></content>
+      
+      
+      <categories>
+          
+          <category> c++ </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 标准库 </tag>
+            
+            <tag> IO库 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>dream</title>
       <link href="/2022/04/16/dream-md/"/>
       <url>/2022/04/16/dream-md/</url>
